@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Website
 
-## Getting Started
+Personal portfolio built with Next.js to showcase backend/full-stack engineering work, projects, resume, and recruiter-focused contact flow.
 
-First, run the development server:
+## Live Site
+
+- Production: [https://mriduljainmj.vercel.app](https://mriduljainmj.vercel.app)
+
+## Highlights
+
+- Full-screen section-based layout with smooth snap scrolling
+- Recruiter-focused top strip (role, location, email, notice period)
+- Dedicated sections for skills, impact infographics, projects, and resume
+- Embedded resume preview with direct download/open CTA
+- Right-side meeting modal with Calendly embed
+- Responsive UI for desktop and mobile
+
+## Tech Stack
+
+- Next.js (App Router)
+- React + TypeScript
+- CSS Modules
+- ESLint
+- Vercel (hosting + Git-based deployments)
+
+## Local Development
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+[http://localhost:3000](http://localhost:3000)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+```bash
+npm run dev
+npm run lint
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```txt
+app/
+  layout.tsx
+  page.tsx
+  page.module.css
+  globals.css
+components/
+  TerminalIntro.tsx
+  ProjectCard.tsx
+  SkillPills.tsx
+public/
+  resume.pdf
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Customize Content
 
-## Deploy on Vercel
+Edit `/Users/mridul/work/Portfolio/portfolio/app/page.tsx`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Name, headline, and intro copy
+- Recruiter strip info (role, location, email, notice period)
+- Social links (GitHub, LinkedIn)
+- Project cards and links
+- Meeting link:
+  - `const meetingLink = "https://calendly.com/your-username/30min";`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Add your resume file at:
+
+- `/Users/mridul/work/Portfolio/portfolio/public/resume.pdf`
+
+## Deployment (Vercel + Git)
+
+This repo is connected to Vercel via Git.
+
+- Push feature branch -> Preview deployment is created automatically
+- Merge into production branch (for example `main`) -> Production deployment is created automatically
+
+Manual deploy (optional):
+
+```bash
+npx vercel --prod
+```
+
+## Notes
+
+- If the embedded meeting calendar is blocked in some environments, the modal includes a direct "Open Booking Page" fallback link.
+- Keep project links and resume updated for job applications.
