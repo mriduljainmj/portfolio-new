@@ -86,6 +86,8 @@ cp .env.example .env.local
 ```env
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+ADMIN_DASHBOARD_KEY=...
 ```
 
 5. Insert/update rows in Supabase tables:
@@ -105,6 +107,22 @@ Portfolio content is now loaded from:
 If Supabase is not configured or tables are empty, the app falls back to default local data from:
 
 - `/Users/mridul/work/Portfolio/portfolio/lib/portfolio-data.ts`
+
+## Admin Frontend (Manage Data)
+
+Use this page to edit content visually and save directly to Supabase:
+
+- `/manage`
+
+Backend endpoints:
+
+- `GET /api/admin/portfolio`
+- `PUT /api/admin/portfolio`
+
+Security behavior:
+
+- If `ADMIN_DASHBOARD_KEY` is set, `/manage` requests must send that key.
+- Server writes use `SUPABASE_SERVICE_ROLE_KEY`, so keep it server-side only.
 
 ## Customize Content (Fallback)
 

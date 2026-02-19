@@ -44,7 +44,7 @@ export type PortfolioData = {
 
 export const fallbackPortfolioData: PortfolioData = {
   profile: {
-    name: "Mridul Jain2",
+    name: "Mridul Jain",
     headline: "Backend and Full-Stack Engineer",
     subtitle:
       "Building reliable systems with backend-first thinking, sharp trade-off analysis, and pragmatic product execution.",
