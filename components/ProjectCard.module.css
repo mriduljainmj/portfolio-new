@@ -1,0 +1,56 @@
+.card {
+  display: block;
+  border-radius: 16px;
+  padding: 1rem;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid rgba(17, 18, 24, 0.12);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.76));
+  box-shadow: 0 14px 30px rgba(17, 18, 24, 0.09);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 93, 71, 0.45);
+  box-shadow: 0 20px 34px rgba(17, 18, 24, 0.14);
+}
+
+.h3 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.p {
+  margin: 0.45rem 0 0;
+  color: #5d6274;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  margin-top: 0.85rem;
+}
+
+.tag {
+  font-size: 0.72rem;
+  color: #4a4f63;
+  border: 1px solid rgba(17, 18, 24, 0.12);
+  padding: 0.28rem 0.52rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.linkRow {
+  margin: 0.8rem 0 0;
+}
+
+.link {
+  color: #d3442f;
+  font-weight: 600;
+  font-size: 0.85rem;
+}

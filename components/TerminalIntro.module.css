@@ -1,0 +1,118 @@
+:root {
+  --shell-bg: #161a22;
+  --shell-top: #20242f;
+  --shell-ink: #f6f7f9;
+  --shell-mute: #b0b6c3;
+  --shell-path: #89e4ff;
+  --shell-ok: #80dd8d;
+}
+
+.terminal {
+  height: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.72rem 0.95rem;
+  background: var(--shell-top);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dots {
+  display: flex;
+  gap: 0.42rem;
+  align-items: center;
+}
+
+.dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+}
+
+.red {
+  background: #ff7c73;
+}
+
+.yellow {
+  background: #ffcc66;
+}
+
+.green {
+  background: #87e27d;
+}
+
+.title {
+  color: var(--shell-mute);
+  font-size: 0.75rem;
+  user-select: none;
+}
+
+.body {
+  height: calc(100% - 2.55rem);
+  overflow: auto;
+  padding: 1rem;
+  font-family: var(--font-mono), "IBM Plex Mono", monospace;
+  font-size: 0.84rem;
+  background: radial-gradient(circle at 0% 0%, rgba(137, 228, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 100% 100%, rgba(128, 221, 141, 0.1), transparent 40%),
+    var(--shell-bg);
+}
+
+.line {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin: 0.45rem 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  animation: rowIn 0.22s ease both;
+}
+
+.prompt {
+  color: var(--shell-ok);
+}
+
+.path {
+  color: var(--shell-path);
+}
+
+.cmd {
+  color: var(--shell-ink);
+}
+
+.output {
+  color: var(--shell-mute);
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.95rem;
+  margin-left: 0.3rem;
+  transform: translateY(0.15rem);
+  border-radius: 2px;
+  background: var(--shell-path);
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
