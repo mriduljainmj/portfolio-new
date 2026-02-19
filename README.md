@@ -53,6 +53,7 @@ npm run build
 
 ```txt
 app/
+  api/portfolio/route.ts
   layout.tsx
   page.tsx
   page.module.css
@@ -61,20 +62,59 @@ components/
   TerminalIntro.tsx
   ProjectCard.tsx
   SkillPills.tsx
+lib/
+  portfolio-data.ts
+  supabase/server.ts
 public/
   resume.pdf
+supabase/
+  schema.sql
 ```
 
-## Customize Content
+## Supabase Setup
 
-Edit `/Users/mridul/work/Portfolio/portfolio/app/page.tsx`:
+1. Create a Supabase project.
+2. Run SQL from `/Users/mridul/work/Portfolio/portfolio/supabase/schema.sql` in the Supabase SQL Editor.
+3. Create env file:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Add your project values in `.env.local`:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+5. Insert/update rows in Supabase tables:
+- `profile`
+- `terminal_lines`
+- `skill_pills`
+- `competencies`
+- `featured_projects`
+
+## Dynamic Content Source
+
+Portfolio content is now loaded from:
+
+- API route: `/Users/mridul/work/Portfolio/portfolio/app/api/portfolio/route.ts`
+- Supabase tables listed above
+
+If Supabase is not configured or tables are empty, the app falls back to default local data from:
+
+- `/Users/mridul/work/Portfolio/portfolio/lib/portfolio-data.ts`
+
+## Customize Content (Fallback)
+
+Edit `/Users/mridul/work/Portfolio/portfolio/lib/portfolio-data.ts`:
 
 - Name, headline, and intro copy
 - Recruiter strip info (role, location, email, notice period)
 - Social links (GitHub, LinkedIn)
 - Project cards and links
-- Meeting link:
-  - `const meetingLink = "https://calendly.com/your-username/30min";`
+- Meeting link and resume URL
 
 Add your resume file at:
 

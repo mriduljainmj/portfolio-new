@@ -4,6 +4,10 @@ import { CSSProperties, useEffect, useRef, useState } from "react";
 import TerminalIntro from "@/components/TerminalIntro";
 import ProjectCard from "@/components/ProjectCard";
 import SkillPills from "@/components/SkillPills";
+import {
+  fallbackPortfolioData,
+  type PortfolioData,
+} from "@/lib/portfolio-data";
 import styles from "./page.module.css";
 
 const sectionItems = [
@@ -13,13 +17,14 @@ const sectionItems = [
   { id: "projects", label: "Projects" },
   { id: "resume", label: "Resume" },
 ];
-const meetingLink = "https://calendly.com/workwithmj27/30min";
 
 export default function Page() {
   const snapRef = useRef<HTMLDivElement | null>(null);
   const [activeSection, setActiveSection] = useState(sectionItems[0].id);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [meetingOpen, setMeetingOpen] = useState(false);
+  const [portfolioData, setPortfolioData] =
+    useState<PortfolioData>(fallbackPortfolioData);
 
   useEffect(() => {
     const snapEl = snapRef.current;
@@ -68,10 +73,37 @@ export default function Page() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPortfolioData() {
+      try {
+        const response = await fetch("/api/portfolio", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = (await response.json()) as PortfolioData;
+        if (!cancelled) {
+          setPortfolioData(data);
+        }
+      } catch {
+        // Keep fallback data on errors.
+      }
+    }
+
+    loadPortfolioData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const pageStyle = {
     "--scroll-progress": scrollProgress.toString(),
     "--parallax-shift": `${scrollProgress * 90}px`,
   } as CSSProperties;
+
+  const meetingLink = portfolioData.profile.meetingLink;
+  const resumeUrl = portfolioData.profile.resumeUrl;
+  const emailAddress = portfolioData.profile.email;
 
   return (
     <main className={styles.page} style={pageStyle}>
@@ -139,7 +171,7 @@ export default function Page() {
           >
             Open Booking Page
           </a>
-          <a className={styles.btnAlt} href="mailto:youremail@example.com">
+          <a className={styles.btnAlt} href={`mailto:${emailAddress}`}>
             Email Instead
           </a>
         </div>
@@ -152,21 +184,23 @@ export default function Page() {
             aria-label="Recruiter quick facts"
           >
             <div className={styles.recruiterFacts}>
-              <span className={styles.recruiterTag}>Actively Interviewing</span>
-              <span className={styles.recruiterFact}>
-                Role: Software Development Engineer
+              <span className={styles.recruiterTag}>
+                {portfolioData.recruiter.status}
               </span>
               <span className={styles.recruiterFact}>
-                Location: India (Open to Remote)
+                Role: {portfolioData.recruiter.role}
+              </span>
+              <span className={styles.recruiterFact}>
+                Location: {portfolioData.recruiter.location}
               </span>
               <a
                 className={styles.recruiterFactLink}
-                href="mailto:itsme.mriduljain@gmail.com"
+                href={`mailto:${emailAddress}`}
               >
-                Email: itsme.mriduljain@gmail.com
+                Email: {emailAddress}
               </a>
               <span className={styles.recruiterFact}>
-                Notice Period: Immediate Joiner
+                Notice Period: {portfolioData.recruiter.noticePeriod}
               </span>
             </div>
             <a className={styles.stripCta} href="#resume">
@@ -183,43 +217,14 @@ export default function Page() {
 
           <div className={styles.heroGrid}>
             <div className={styles.glassPanel}>
-              <TerminalIntro
-                lines={[
-                  { type: "cmd", text: "whoami" },
-                  {
-                    type: "output",
-                    text: "Mridul Jain - Backend and Full-Stack Engineer",
-                  },
-                  { type: "cmd", text: "cat focus.txt" },
-                  {
-                    type: "output",
-                    text: "Scalable APIs | Performance | Clean architecture | System design",
-                  },
-                  { type: "cmd", text: "ls projects/" },
-                  {
-                    type: "output",
-                    text: "url-shortener ecommerce-order-system notification-service",
-                  },
-                  { type: "cmd", text: "cat highlights.md" },
-                  {
-                    type: "output",
-                    text: "Indexed lookups, Redis caching, idempotency patterns, retry/backoff, Dockerized setup.",
-                  },
-                ]}
-              />
+              <TerminalIntro lines={portfolioData.terminalLines} />
             </div>
 
             <aside className={styles.profilePanel}>
               <p className={styles.kicker}>Open to backend-heavy SDE roles</p>
-              <h1 className={styles.h1}>Mridul Jain</h1>
-              <p className={styles.subtitle}>
-                Building reliable systems with backend-first thinking, sharp
-                trade-off analysis, and pragmatic product execution.
-              </p>
-              <p className={styles.jobFocus}>
-                Hiring Focus: Software Development Engineer roles where I can
-                build reliable backend systems and ship product impact.
-              </p>
+              <h1 className={styles.h1}>{portfolioData.profile.name}</h1>
+              <p className={styles.subtitle}>{portfolioData.profile.subtitle}</p>
+              <p className={styles.jobFocus}>{portfolioData.profile.hiringFocus}</p>
 
               <div className={styles.quickStats}>
                 <span>API Design</span>
@@ -230,7 +235,7 @@ export default function Page() {
               <div className={styles.actions}>
                 <a
                   className={styles.btn}
-                  href="https://github.com/mriduljainmj"
+                  href={portfolioData.profile.githubUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -238,7 +243,7 @@ export default function Page() {
                 </a>
                 <a
                   className={styles.btn}
-                  href="https://linkedin.com/in/mriduljainmj"
+                  href={portfolioData.profile.linkedinUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -246,7 +251,7 @@ export default function Page() {
                 </a>
                 <a
                   className={styles.btn}
-                  href="/resume.pdf"
+                  href={resumeUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -257,15 +262,7 @@ export default function Page() {
                 </a>
               </div>
 
-              <SkillPills
-                items={[
-                  { strong: "Java", rest: "Spring Boot" },
-                  { strong: "SQL", rest: "Indexing" },
-                  { strong: "Redis", rest: "Caching" },
-                  { strong: "Docker", rest: "CI/CD" },
-                  { strong: "System Design", rest: "Trade-offs" },
-                ]}
-              />
+              <SkillPills items={portfolioData.skillPills} />
             </aside>
           </div>
         </section>
@@ -273,26 +270,15 @@ export default function Page() {
         <section id="skills" className={styles.section}>
           <h2 className={styles.sectionTitle}>Core Competencies</h2>
           <div className={styles.grid2}>
-            <ProjectCard
-              title="Backend"
-              description="Spring Boot services, REST design, auth, caching, rate-limiting, and observability patterns."
-              tags={["Java", "Spring Boot", "JWT", "Redis"]}
-            />
-            <ProjectCard
-              title="Data + Performance"
-              description="Schema design, indexing, query tuning, pagination strategies, and latency-first thinking."
-              tags={["MySQL", "Postgres", "Indexes", "Profiling"]}
-            />
-            <ProjectCard
-              title="Infra + DevOps"
-              description="Dockerized local development, stable configs, CI checks, and production-safe rollouts."
-              tags={["Docker", "CI/CD", "Configs", "Logging"]}
-            />
-            <ProjectCard
-              title="System Design"
-              description="Balanced decisions on consistency, caching strategy, scaling reads/writes, and resiliency."
-              tags={["Trade-offs", "Consistency", "Caching"]}
-            />
+            {portfolioData.competencies.map((item, index) => (
+              <ProjectCard
+                key={`${item.title}-${index}`}
+                title={item.title}
+                description={item.description}
+                tags={item.tags}
+                href={item.href}
+              />
+            ))}
           </div>
         </section>
 
@@ -363,44 +349,28 @@ export default function Page() {
                 <div className={styles.flowNode}>Data + Cache</div>
               </div>
               <p className={styles.infoNote}>
-                Design focus: low-latency reads, consistent writes, and resilient retries.
+                Design focus: low-latency reads, consistent writes, and resilient
+                retries.
               </p>
             </article>
-
           </div>
         </section>
 
         <section id="projects" className={styles.section}>
           <h2 className={styles.sectionTitle}>Featured Projects</h2>
           <div className={styles.grid2}>
-            <ProjectCard
-              title="Scalable URL Shortener"
-              description="Base62 short codes, indexed lookups, hot-key caching, expiry strategy, and abuse protection."
-              tags={["Spring Boot", "MySQL", "Redis", "Rate Limit"]}
-              href="https://github.com/yourgithub/url-shortener"
-            />
-            <ProjectCard
-              title="E-commerce Order System"
-              description="Order lifecycle, inventory safety via optimistic locking, idempotency controls, and retries."
-              tags={["Transactions", "Optimistic Lock", "Schedulers"]}
-              href="https://github.com/yourgithub/ecommerce-order-system"
-            />
-            <ProjectCard
-              title="Notification Microservice"
-              description="Async delivery with retries plus dead-letter handling and reliable failure isolation."
-              tags={["Events", "Retry", "DLQ", "Observability"]}
-              href="https://github.com/yourgithub/notification-service"
-            />
-            <ProjectCard
-              title="System Design Notes"
-              description="Short practical writeups on caching strategy, indexing trade-offs, scaling, and consistency."
-              tags={["Docs", "Trade-offs"]}
-              href="#"
-            />
+            {portfolioData.featuredProjects.map((item, index) => (
+              <ProjectCard
+                key={`${item.title}-${index}`}
+                title={item.title}
+                description={item.description}
+                tags={item.tags}
+                href={item.href}
+              />
+            ))}
           </div>
-          <br></br>
           <p className={styles.footer}>
-            Copyright {new Date().getFullYear()} Mridul Jain
+            Copyright {new Date().getFullYear()} {portfolioData.profile.name}
           </p>
         </section>
 
@@ -413,7 +383,7 @@ export default function Page() {
               </p>
               <a
                 className={styles.btn}
-                href="/resume.pdf"
+                href={resumeUrl}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -421,8 +391,8 @@ export default function Page() {
               </a>
             </div>
             <iframe
-              title="Mridul Jain Resume"
-              src="/resume.pdf#view=FitH"
+              title={`${portfolioData.profile.name} Resume`}
+              src={`${resumeUrl}#view=FitH`}
               className={styles.resumeFrame}
             />
           </div>
